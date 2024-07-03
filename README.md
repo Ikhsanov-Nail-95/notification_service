@@ -1,8 +1,8 @@
-# Service Template
+## Service Template
 
 Стандартный шаблон проекта на SpringBoot
 
-# Использованные технологии
+## Использованные технологии
 
 * [Spring Boot](https://spring.io/projects/spring-boot) – как основной фрэймворк
 * [PostgreSQL](https://www.postgresql.org/) – как основная реляционная база данных
@@ -13,7 +13,7 @@
 * [Lombok](https://projectlombok.org/) – для удобной работы с POJO классами
 * [MapStruct](https://mapstruct.org/) – для удобного маппинга между POJO классами
 
-# База данных
+## База данных
 
 * База поднимается в отдельном сервисе [infra](../infra)
 * Redis поднимается в единственном инстансе тоже в [infra](../infra)
