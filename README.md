@@ -20,90 +20,15 @@
 * Liquibase сам накатывает нужные миграции на голый PostgreSql при старте приложения
 * В тестах используется [testcontainers](https://testcontainers.com/), в котором тоже запускается отдельный инстанс
   postgres
-* В коде продемонстрирована работа как с JdbcTemplate, так и с JPA (Hibernate)
+* В коде продемонстрирована работа как с JPA (Hibernate)
 
-# Как начать разработку начиная с шаблона?
+## Notification Service - обработка и отправление нотификаций
+[Общий интерфейс](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/messages/MessageBuilder.java) для реализации определённого типа [Message Builder](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/messages/LikeEventMessageBuilder.java) для построения корректного сообщения (в моём случае под мой тип нотификации), после чего выбирает предпочитаемый вид контакта пользователя и отправляет этим способом нотификацию.
 
-1. Сначала нужно склонировать этот репозиторий
+[Общий интерфейс](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/service/NotificationService.java) предоставляет основные методы для отправки нотификаций пользователю. Под каждый конкретный способ отправки (SMS, Email, Telegram...) создается реализация этого интерфейса.
+В моем случае я реализовал [TelegramService](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/service/telegram/TelegramService.java), который отвечает за отправку нотификаций пользователю в его Телеграм через нашего собственного Telegram-бота.
 
-```shell
-git clone https://github.com/FAANG-School/ServiceTemplate
-```
+[Абстрактный класс](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/service/telegram/command/Command.java) для реализации различных команд необходимых при взаимодействия с пользователем, например команда [StartCommand](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/service/telegram/command/StartCommand.java).
 
-2. Далее удаляем служебную директорию для git
-
-```shell
-# Переходим в корневую директорию проекта
-cd ServiceTemplate
-rm -rf .git
-```
-
-3. Далее нужно создать совершенно пустой репозиторий в github/gitlab
-
-4. Создаём новый репозиторий локально и коммитим изменения
-
-```shell
-git init
-git remote add origin <link_to_repo>
-git add .
-git commit -m "<msg>"
-```
-
-Готово, можно начинать работу!
-
-# Как запустить локально?
-
-Сначала нужно развернуть базу данных из директории [infra](../infra)
-
-Далее собрать gradle проект
-
-```shell
-# Нужно запустить из корневой директории, где лежит build.gradle.kts
-gradle build
-```
-
-Запустить jar'ник
-
-```shell
-java -jar build/libs/ServiceTemplate-1.0.jar
-```
-
-Но легче всё это делать через IDE
-
-# Код
-
-RESTful приложения калькулятор с единственным endpoint'ом, который принимает 2 числа и выдает результаты их сложения,
-вычитаяни, умножения и деления
-
-* Обычная трёхслойная
-  архитектура – [Controller](src/main/java/faang/school/notificationservice/controller), [Service](src/main/java/faang/school/notificationservice/service), [Repository](src/main/java/faang/school/notificationservice/repository)
-* Слой Repository реализован и на jdbcTemplate, и на JPA (Hibernate)
-* Написан [GlobalExceptionHandler](src/main/java/faang/school/notificationservice/controller/GlobalExceptionHandler.java)
-  который умеет возвращать ошибки в формате `{"code":"CODE", "message": "message"}`
-* Используется TTL кэширование вычислений
-  в [CalculationTtlCacheService](src/main/java/faang/school/notificationservice/service/cache/CalculationTtlCacheService.java)
-* Реализован простой Messaging через [Redis pub/sub](https://redis.io/docs/manual/pubsub/)
-  * [Конфигурация](src/main/java/faang/school/notificationservice/config/RedisConfig.java) –
-    сетапится [RedisTemplate](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/RedisTemplate.html) –
-    класс, для удобной работы с Redis силами Spring
-  * [Отправитель](src/main/java/faang/school/notificationservice/service/messaging/RedisCalculationPublisher.java) – генерит
-    рандомные запросы и отправляет в очередь
-  * [Получатель](src/main/java/faang/school/notificationservice/service/messaging/RedisCalculationSubscriber.java) –
-    получает запросы и отправляет задачи асинхронно выполняться
-    в [воркер](src/main/java/faang/school/notificationservice/service/worker/CalculationWorker.java)
-
-# Тесты
-
-Написаны только для единственного REST endpoint'а
-* SpringBootTest
-* MockMvc
-* Testcontainers
-* AssertJ
-* JUnit5
-* Parameterized tests
-
-# TODO
-
-* Dockerfile, который подключается к сети запущенной postgres в docker-compose
-* Redis connectivity
-* ...
+Класс [CommandExecutor](https://github.com/Ikhsanov-Nail-95/notification_service/blob/main/src/main/java/faang/school/notificationservice/service/telegram/command/CommandExecutor.java) служит для выполнения команд (например, "/start", "/help"), которые могут взаимодействовать с пользователем через чат. Команды хранятся в словаре `commands`, где ключом является строка, обозначающая команду, а значением - объект класса `Command`. В методе `execute()` происходит поиск команды по переданному ключу, и если команда найдена, то вызывается метод `sendMessage()` объекта команды, который возвращает объект `SendMessage`. Если команда не найдена, то вызывается команда с ключом `/unknown`.
+Таким образом, класс `CommandExecutor` обеспечивает гибкое и расширяемое выполнение команд, передаваемых в виде строк, и позволяет легко добавлять новые команды или изменять существующие.
