@@ -12,4 +12,5 @@ public interface TelegramProfilesRepository extends JpaRepository<TelegramProfil
     boolean existsByUserName(String userName);
 
     Optional<TelegramProfile> findByUserId(Long userId);
+
 }

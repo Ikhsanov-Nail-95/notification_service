@@ -2,14 +2,12 @@ package faang.school.notificationservice.dto;
 
 import faang.school.notificationservice.enums.ContactType;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Setter
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ContactDto {
 
@@ -20,4 +18,5 @@ public class ContactDto {
     private String contact;
     @NotNull
     private ContactType type;
+
 }

@@ -1,9 +1,10 @@
-package faang.school.notificationservice.listeners;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.UserDto;
-import faang.school.notificationservice.messages.MessageBuilder;
+import faang.school.notificationservice.exception.JsonSerializationException;
+import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public abstract class AbstractListener<T> implements MessageListener {
             consumer.accept(event);
         } catch (IOException e) {
             log.error("Error deserializing JSON to object of type {} ", type.getName(), e);
-            throw new RuntimeException(e);
+            throw new JsonSerializationException("Failed to serialize type: " + type, e);
         }
     }
 

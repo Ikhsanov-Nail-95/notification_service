@@ -19,7 +19,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final TelegramProfileService telegramProfileService;
     private final TelegramBotConfig telegramBotConfig;
     private final CommandExecutor commandExecutor;
-    private final Command commandBuildMessage;
+    private final Command command;
 
     @Autowired
     public TelegramBot(TelegramProfileService telegramProfileService,
@@ -30,7 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.telegramProfileService = telegramProfileService;
         this.telegramBotConfig = telegramBotConfig;
         this.commandExecutor = commandExecutor;
-        this.commandBuildMessage = command;
+        this.command = command;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public void toSendMessage(long userId, String message) {
         TelegramProfile profile = telegramProfileService.findByUserId(userId);
-        commandBuildMessage.buildMessage(profile.getChatId(), message);
+        command.buildMessage(profile.getChatId(), message);
     }
 
     private void executeMessage (SendMessage sendMessage) {

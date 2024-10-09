@@ -21,4 +21,5 @@ public class TelegramService implements NotificationService {
     public PreferredContact getPreferredContact() {
         return PreferredContact.TELEGRAM;
     }
+
 }

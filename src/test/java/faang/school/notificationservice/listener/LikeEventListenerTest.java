@@ -1,11 +1,11 @@
-package faang.school.notificationservice.listeners;
+package faang.school.notificationservice.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.notificationservice.client.UserServiceClient;
 import faang.school.notificationservice.dto.LikeEvent;
 import faang.school.notificationservice.dto.UserDto;
 import faang.school.notificationservice.enums.PreferredContact;
-import faang.school.notificationservice.messages.MessageBuilder;
+import faang.school.notificationservice.message.MessageBuilder;
 import faang.school.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

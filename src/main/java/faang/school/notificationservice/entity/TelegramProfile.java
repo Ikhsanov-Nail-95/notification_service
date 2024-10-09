@@ -1,14 +1,12 @@
 package faang.school.notificationservice.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Setter
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "telegram_profiles")
@@ -26,4 +24,5 @@ public class TelegramProfile {
 
     @Column(name = "chat_id")
     private long chatId;
+
 }

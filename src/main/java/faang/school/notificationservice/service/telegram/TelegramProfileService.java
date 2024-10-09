@@ -27,4 +27,5 @@ public class TelegramProfileService {
         return telegramProfilesRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Telegram profile not found"));
     }
+
 }
