@@ -5,12 +5,14 @@ import faang.school.notificationservice.service.telegram.TelegramProfileService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.Locale;
 
 @Slf4j
 @AllArgsConstructor
+@Component
 public abstract class Command {
 
     protected final MessageSource messageSource;
